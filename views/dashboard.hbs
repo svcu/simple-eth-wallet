@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>jk</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amaranth">
+    <link rel="stylesheet" href="/assets/css/Login-Form-Dark.css">
+    <link rel="stylesheet" href="/assets/css/Navigation-with-Button.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+
+<body>
+
+   
+
+    <section style="width: 100%;height: 100vh;">
+        <div class="row text-center" style="margin-top: 56px;">
+            <div class="col d-flex justify-content-xl-center align-items-xl-center">
+                <h1 style="font-size: 31px;" id="balance">Current Balance:&nbsp;</h1>
+            </div>
+            <div class="col d-flex justify-content-xl-center align-items-xl-center">
+                <h1 style="font-size: 31px;" id="non">No verified balance:</h1>
+            </div>
+        </div>
+        <h1 class="text-center" style="margin-top: 63px;">ETH PRICE</h1>
+        <h1 class="text-center" style="margin-top: 47px;font-family: Amaranth, sans-serif;color: rgb(33,37,41);" id="price">0 USD</h1>
+            {{#each h}}
+            <script src="/crypto-js/crypto-js.js"></script>
+            <script>
+
+
+                    if(localStorage.getItem("address") !== "null"){
+                         localStorage.setItem("address", `${{{address}}}`);
+                    }
+                    
+                
+                    if(localStorage.getItem("public") !== "null"){
+                        localStorage.setItem("public", `${{{public}}}`);
+                    }
+              
+                      
+                
+                    if(localStorage.getItem("private") !== "null"){
+                         localStorage.setItem("private", `${{{private}}}`);
+                    }
+                      
+                
+                var adress = localStorage.getItem("address") 
+                var correct_address = adress.replace("$", "");
+                var public = localStorage.getItem("public") 
+                var correct_public = public.replace("$", "")
+                var private = localStorage.getItem("private") 
+                var correct_private = private.replace("$", "")
+
+            
+                localStorage.setItem("address", "0x"+correct_address);
+                localStorage.setItem("public", "0x"+correct_public);
+                localStorage.setItem("private", "0x"+correct_private)
+              
+
+                //Decrypt Data
+
+
+          
+
+
+                //Getting Adress Information
+                fetch("https://api.blockcypher.com/v1/eth/main/addrs/"+localStorage.getItem("address")+"/balance")
+                .then(response => response.json()
+                .then(data => {
+                    
+                    console.log(data);
+            
+                     document.getElementById("non").innerHTML = "No verified Balance: "+ data.unconfirmed_balance;
+                     document.getElementById("balance").innerHTML= "Current Balance: "+ data.balance;
+                }))
+
+                //Getting ETH price
+                fetch("https://api.coinstats.app/public/v1/coins?skip=0&limit=10").
+                then(response =>  {
+
+                    response.json().then(data => {
+                              console.log(data)
+                
+                data.coins.forEach(currency => {
+
+                        console.log(currency.price)
+
+                    if(currency.id=="ethereum"){
+                        document.getElementById("price").innerHTML = currency.price.toString() + " USD"
+                    }
+                })
+                    })
+                
+                }
+                )
+                    function ascii_to_hexa(str)
+                        {
+	                    var arr1 = [];
+	                    for (var n = 0, l = str.length; n < l; n ++) 
+                          {
+	                        	var hex = Number(str.charCodeAt(n)).toString(16);
+	                        	arr1.push(hex);
+	                     }
+	                return arr1.join('');
+   }
+               
+               
+               
+            </script>
+       {{/each}}
+
+        <div class="row" style="margin-top: 275px;">
+            <div class="col text-center d-flex justify-content-xl-center align-items-xl-center"><button onclick="window.location = '/receive'" class="btn btn-primary" id="send" type="button" style="width: 25%;height: 85px;background-color: white;color: black;font-size: x-large;">Recibir</button></div>
+            <div class="col text-center d-flex justify-content-xl-center align-items-xl-center"><button onclick="window.location = '/send'" class="btn btn-primary" id="receive" type="button" style="width: 25%;height: 85px;/*background-color: rgb(255,0,31);*/">Enviar</button></div>
+        </div>
+    </section>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+
+ 
+    
+</body>
+
+</html>
