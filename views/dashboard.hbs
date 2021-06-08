@@ -65,18 +65,23 @@
 
 
           
-
+                const body = {
+                    "add": localStorage.getItem("address")
+                }
 
                 //Getting Adress Information
-                fetch("https://api.blockcypher.com/v1/eth/main/addrs/"+localStorage.getItem("address")+"/balance")
-                .then(response => response.json()
-                .then(data => {
-                    
-                    console.log(data);
+                fetch("http://localhost:3000/balance", {method: "post", body: JSON.stringify(body), headers:{"Content-Type" : "application/json"}})
+                .then(response => {
+                      
+                    response.json()
+                    .then(data => {
+                            console.log(JSON.parse(data));
             
-                     document.getElementById("non").innerHTML = "No verified Balance: "+ data.unconfirmed_balance;
-                     document.getElementById("balance").innerHTML= "Current Balance: "+ data.balance;
-                }))
+                     document.getElementById("non").innerHTML = "No verified Balance: "+ JSON.parse(data).unconfirmed_balance;
+                     document.getElementById("balance").innerHTML= "Current Balance: "+ JSON.parse(data).balance;
+                    })
+                }
+                )
 
                 //Getting ETH price
                 fetch("https://api.coinstats.app/public/v1/coins?skip=0&limit=10").
