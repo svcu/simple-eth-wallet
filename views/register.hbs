@@ -38,7 +38,7 @@
                             document.getElementById("a").value = address;
                             document.getElementById("pu").value = public;
                             document.getElementById("priv").value = private;
-                            alert("This is the mnemonic for your wallet, save it" + data.mem);
+                            alert("This is the mnemonic for your wallet, save it: " + JSON.stringify(data.mem.phrase));
                          }))
                  </script>
 

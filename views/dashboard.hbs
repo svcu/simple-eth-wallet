@@ -21,9 +21,7 @@
             <div class="col d-flex justify-content-xl-center align-items-xl-center">
                 <h1 style="font-size: 31px;" id="balance">Current Balance:&nbsp;</h1>
             </div>
-            <div class="col d-flex justify-content-xl-center align-items-xl-center">
-                <h1 style="font-size: 31px;" id="non">No verified balance:</h1>
-            </div>
+           
         </div>
         <h1 class="text-center" style="margin-top: 63px;">ETH PRICE</h1>
         <h1 class="text-center" style="margin-top: 47px;font-family: Amaranth, sans-serif;color: rgb(33,37,41);" id="price">0 USD</h1>
@@ -77,8 +75,8 @@
                     .then(data => {
                             console.log(JSON.parse(data));
             
-                     document.getElementById("non").innerHTML = "No verified Balance: "+ JSON.parse(data).unconfirmed_balance;
-                     document.getElementById("balance").innerHTML= "Current Balance: "+ JSON.parse(data).balance;
+                    
+                     document.getElementById("balance").innerHTML= "Current Balance: "+ data;
                     })
                 }
                 )

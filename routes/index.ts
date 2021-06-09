@@ -33,23 +33,46 @@ router.post("/user", async (req, res)=>{
     console.log(req.body)
 
     const {email, password, address, publick, privatek} = req.body;
-    const userList = await user.find();
-    const lastID = parseInt(userList.length, 10);
-    const id = lastID + 1;
+    const device = req.body.device;
 
-    const v = await user.findOne({email: email});
-
-    if(!v){
-        const newUser = new user({id, email, password, address, public: publick, private: privatek})
-
-        newUser.password = await newUser.encrypt(newUser.password);
+    if(device){
+        const userList = await user.find();
+        const lastID = parseInt(userList.length, 10);
+        const id = lastID + 1;
     
-        await newUser.save();
+        const v = await user.findOne({email: email});
     
-        res.render("login.hbs");
+        if(!v){
+            const newUser = new user({id, email, password, address, public: publick, private: privatek, device})
+    
+            newUser.password = await newUser.encrypt(newUser.password);
+        
+            await newUser.save();
+        
+            res.render("login.hbs");
+        }else{
+            res.send("Used Email")
+        }
     }else{
-        res.send("Used Email")
+        const userList = await user.find();
+        const lastID = parseInt(userList.length, 10);
+        const id = lastID + 1;
+    
+        const v = await user.findOne({email: email});
+    
+        if(!v){
+            const newUser = new user({id, email, password, address, public: publick, private: privatek})
+    
+            newUser.password = await newUser.encrypt(newUser.password);
+        
+            await newUser.save();
+        
+            res.render("login.hbs");
+        }else{
+            res.send("Used Email")
+        }
     }
+   
 
  
 })
@@ -107,15 +130,24 @@ router.get("/generate_keys", (req, res)=>{
 router.post("/balance", async(req, res)=>{
 
     const options = {
-        uri: " https://api.blockcypher.com/v1/eth/main/addrs/"+req.body.add+"/balance"
+        uri: " https://api.cryptoapis.io/v1/bc/eth/rinkeby/address/"+req.body.add,
+        headers: {
+            "Content-Type" : "application/json",
+            "X-API-Key" : "444360b0ca99b7daa9b555246b5b1d3659e6378e"
+        }
     }
 
     rp(options)
     .then(response => {
 
-        console.log(response)
+        console.log(JSON.parse(response))
 
-        res.send(JSON.stringify(response))
+        const d = JSON.parse(response)
+
+      
+        console.log(d.payload.balance)
+
+        res.send(JSON.stringify(d.payload.balance))
     })
 })
 
@@ -130,7 +162,7 @@ router.post("/transaction", async(req, res)=>{
     }
 
    const options = {
-        uri: "https://api.cryptoapis.io/v1/bc/eth/ropsten/txs/send",
+        uri: "https://api.cryptoapis.io/v1/bc/eth/rinkeby/txs/send",
         method: "POST",
         json: true,
         body: body,
@@ -146,6 +178,7 @@ router.post("/transaction", async(req, res)=>{
 
        const tx = response;
 
+       tx.gasLimit = 21999
 
        const b = {
            "tx" : tx,
@@ -205,7 +238,7 @@ router.post("/broadcast", (req, res)=>{
     }
 
    const options = {
-        uri: "https://api.cryptoapis.io/v1/bc/eth/ropsten/txs/push",
+        uri: "https://api.cryptoapis.io/v1/bc/eth/rinkeby/txs/push",
         method: "POST",
         json: true,
         body: body,
