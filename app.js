@@ -1,9 +1,10 @@
 const express = require("express");
 const app= express();
 const morgan = require("morgan");
-require("./config/db")
+//process.env["DB_URI"] = "mongodb://localhost/simpleethTEST"
+require("./config/db.js")
 const exphbs=require("express-handlebars");
-const passport = require("passport");
+const passport2 = require("passport");
 const session = require("express-session")
 var SOCKETIO = require('socket.io'); 
 
@@ -11,7 +12,8 @@ var SOCKETIO = require('socket.io');
 
 
 require("./helpers/passport")
-
+require("dotenv").config({path: "./.env"
+})
 
 
 //Settings
@@ -28,8 +30,8 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport2.initialize());
+app.use(passport2.session());
 app.use(express.static("./static"));
 app.use(express.static('./node_modules'));  
 app.engine(".hbs", exphbs({
@@ -68,4 +70,4 @@ io.on("connection", (socket)=>{
 
 
 
-app.use(require("./routes/index"));
+app.use(require("./routes/index.ts"));
