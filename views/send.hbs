@@ -14,7 +14,7 @@
 
 <body>
     <section style="width: 100%;height: 100vh;">
-        <div class="col d-flex flex-column justify-content-xl-center align-items-xl-center" style="margin-top: 35px;"><label>To Address:</label><input type="text" id="to"><label>Amount:</label><input type="number" id="amount"><button class="btn btn-primary" id="sendMoney" type="button" style="margin-top: 12px;" onclick="sign()">Enviar</button></div>
+        <div class="col d-flex flex-column justify-content-xl-center align-items-xl-center" style="margin-top: 35px;"><label>To Address:</label><input type="text" id="to"><label>Amount:</label><input type="number" id="amount"><button class="btn btn-primary" id="sendMoney" type="button" style="margin-top: 12px;" onclick="send()">Enviar</button></div>
     </section>
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
@@ -23,27 +23,48 @@
             alert("You are offline, check your internet connection")
         }
 
-        window.addEventListener("offline", ()=>{alert("You are offline, check tour internet connection")})
-
-        function sign(){
-             var tx = 
-        {"inputs":[{"addresses": [localStorage.getItem("address")]}],"outputs":[{"addresses": [document.getElementById("to").value], "value": document.getElementById("amount").value}]}  
+     
 
 
+      //  document.getElementById("sendMoney").addEventListener("click", await send());
 
-  fetch("https://api.blockcypher.com/v1/eth/main/txs/new?token=27ce16d067594a40a8ec5b63beae454e", {method:"post", body: JSON.stringify(tx), headers:{"Content-Type": "application/json"}})
-  .then(response => console.log)
+         function send(){
 
-  //curl -sd '{"inputs":[{"addresses": ["add42af7dd58b27e1e6ca5c4fdc01214b52d382f"]}],"outputs":[{"addresses": ["884bae20ee442a1d53a1d44b1067af42f896e541"], "value": 4200000000000000}]}' https://api.blockcypher.com/v1/eth/main/txs/new?token=27ce16d067594a40a8ec5b63beae454e
+         
+            let b = 
+                {
+                    "from" : localStorage.getItem("address"),
+                    "to" : document.getElementById("to").value,
+                    "value" : document.getElementById("amount").value,
+                    "private" : localStorage.getItem("private")
+                }
+
+                console.log(JSON.stringify(b))
+            
+            
+           fetch("http://localhost:3000/transaction", {
+                method: "post",
+                body: JSON.stringify(b),
+                headers: {"Content-Type" : "application/json"}
+                })
+                .then(response => {
+                        response.json().then(data => {
+                            console.log(data);
+                            if(data.state != "faiulre"){
+                                alert("Succesfull transaction")
+                            }else{
+                                alert("Error sending the transaction, try again later")
+                            }
+                })
 
 
-  var signature = "";
+          
+               
 
-  /*fetch("http://localhost:3000/sign", {method:"post", body:JSON.stringify(tx), headers:{"Content-Type" : "application/json"}})
-  .then(response => response.json().then(data => signature=data))*/
-        }
-
-
+              
+           
+               
+        })}
        
 
     </script>
